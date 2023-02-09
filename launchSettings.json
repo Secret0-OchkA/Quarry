@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "local-warhouse-api": "StartDebugging",
+        "migrationapplay": "StartWithoutDebugging",
+        "sql-server-db": "StartWithoutDebugging"
+      }
+    }
+  }
+}

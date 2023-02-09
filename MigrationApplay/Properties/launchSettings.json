@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MigrationApplay": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
