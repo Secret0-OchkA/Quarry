@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\src\LocalWarehouseApplication\ForMigrations\ForMigrations.csproj" />
+    <ProjectReference Include="..\src\WarehouseApplication\ForMigrations\ForMigrations.csproj" />
   </ItemGroup>
 
 </Project>

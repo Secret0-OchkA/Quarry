@@ -34,7 +34,7 @@ namespace Api
 
         private static IServiceCollection ConfigureDbConnection(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<IDbConnection>(new SqlConnection(configuration.GetConnectionString("MsSql")));
+            services.AddSingleton<IDbConnection>(new SqlConnection(configuration.GetConnectionString("MsSql")?? Environment.GetEnvironmentVariable("MsSql")));
             return services;
         }
 

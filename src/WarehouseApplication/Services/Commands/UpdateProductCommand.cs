@@ -30,17 +30,15 @@ namespace Api.Features.Commands
 
             public async Task<Product> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
             {
-                Product updateProduct = new Product()
-                {
-                    Id = request.Id,
-                    Name = request.Name,
-                    Description = request.Description,
-                    Cost = request.Cost,
-                    Count = request.Count,
-                    Unit = request.Unit,
-                };
+                Product updateProduct = new Product(
+                    Name: request.Name,
+                    Description: request.Description,
+                    Cost: request.Cost,
+                    Count: request.Count,
+                    Unit: request.Unit
+                );
 
-                await productRepository.Update(updateProduct);
+                await productRepository.Update(request.Id, updateProduct);
 
                 return updateProduct;
             }

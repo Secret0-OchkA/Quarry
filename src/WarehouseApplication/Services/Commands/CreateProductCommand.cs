@@ -3,6 +3,7 @@ using FluentValidation;
 using Infrastructura;
 using MediatR;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,15 +30,13 @@ namespace Api.Features.Commands
 
             public async Task<Product> Handle(CreateProductCommand request, CancellationToken cancellationToken)
             {
-                Product product = new Product()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = request.Name,
-                    Description = request.Description,
-                    Cost = request.Cost,
-                    Count = request.Count,
-                    Unit = request.Unit,
-                };
+                Product product = new Product(
+                    Name: request.Name,
+                    Description: request.Description,
+                    Cost: request.Cost,
+                    Count: request.Count,
+                    Unit: request.Unit
+                );
 
                 await productRepository.Cereate(product);
 

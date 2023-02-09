@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace ForMigrations
 {
-    public class LocalWarehouseDbContext : DbContext
+    public class WarehouseDbContext : DbContext
     {
         public DbSet<Product> Products { get; set; } = null!;
 
-        public LocalWarehouseDbContext(DbContextOptions<LocalWarehouseDbContext> options) : base(options) { }
+        public WarehouseDbContext(DbContextOptions<WarehouseDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

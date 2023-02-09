@@ -17,7 +17,7 @@ namespace Infrastructura
 
         Task<int> Cereate(TEntity entity);
 
-        Task<int> Update(TEntity entity);
+        Task<int> Update(Guid Id, TEntity entity);
 
         Task<int> Delete(Guid Id);
     }

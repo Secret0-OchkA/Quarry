@@ -13,7 +13,7 @@ try
 {
     Console.WriteLine("apply migration");
 
-    using (LocalWarehouseDbContext context = new LocalWarehouseDbContextFactory()
+    using (WarehouseDbContext context = new WarehouseDbContextFactory()
         .CreateDbContext(new string[] { configuration.GetConnectionString("LocalWarehouseDbContext")! }))
         await context.Database.MigrateAsync().ConfigureAwait(false);
 

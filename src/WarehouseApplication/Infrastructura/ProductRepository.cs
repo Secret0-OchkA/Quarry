@@ -60,7 +60,7 @@ namespace Infrastructura
                 new {id});
         }
 
-        public async Task<int> Update(Product entity)
+        public async Task<int> Update(Guid Id,Product entity)
         {
             string query = $"UPDATE [Products] SET" +
                 $"[{nameof(Product.Name)}] = @{nameof(Product.Name)}," +
@@ -70,7 +70,7 @@ namespace Infrastructura
                 $"[{nameof(Product.Unit)}] = @{nameof(Product.Unit)} " +
                 $"WHERE [{nameof(Product.Id)}] = @{nameof(Product.Id)}";
 
-            return await dbConnection.ExecuteAsync(query,entity);
+            return await dbConnection.ExecuteAsync(query,new { Id, entity });
         }
     }
 }
