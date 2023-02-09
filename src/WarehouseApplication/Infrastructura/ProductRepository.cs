@@ -28,7 +28,8 @@ namespace Infrastructura
                 $"[{nameof(Product.Description)}]," +
                 $"[{nameof(Product.Cost)}]," +
                 $"[{nameof(Product.Count)}]," +
-                $"[{nameof(Product.Unit)}]" +
+                $"[{nameof(Product.Unit)}]," +
+                $"[{nameof(Product.Owner)}]" +
                 $")" +
                 $"VALUES" +
                 $"(" +
@@ -37,7 +38,8 @@ namespace Infrastructura
                 $"@{nameof(Product.Description)}," +
                 $"@{nameof(Product.Cost)}," +
                 $"@{nameof(Product.Count)}," +
-                $"@{nameof(Product.Unit)}" +
+                $"@{nameof(Product.Unit)}," +
+                $"@{nameof(Product.Owner)}" +
                 $")";
 
             return await dbConnection.ExecuteAsync(query,entity);
@@ -67,7 +69,8 @@ namespace Infrastructura
                 $"[{nameof(Product.Description)}] = @{nameof(Product.Description)}," +
                 $"[{nameof(Product.Cost)}] = @{nameof(Product.Cost)}," +
                 $"[{nameof(Product.Count)}] = @{nameof(Product.Count)}," +
-                $"[{nameof(Product.Unit)}] = @{nameof(Product.Unit)} " +
+                $"[{nameof(Product.Unit)}] = @{nameof(Product.Unit)}," +
+                $"[{nameof(Product.Owner)}] = @{nameof(Product.Owner)} " +
                 $"WHERE [{nameof(Product.Id)}] = @{nameof(Product.Id)}";
 
             return await dbConnection.ExecuteAsync(query,new { Id, entity });

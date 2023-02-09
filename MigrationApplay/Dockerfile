@@ -6,8 +6,8 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["MigrationApplay/MigrationApplay.csproj", "MigrationApplay/"]
-COPY ["src/LocalWarehouseApplication/ForMigrations/ForMigrations.csproj", "src/LocalWarehouseApplication/ForMigrations/"]
-COPY ["src/LocalWarehouseApplication/Domain/Domain.csproj", "src/LocalWarehouseApplication/Domain/"]
+COPY ["src/WarehouseApplication/ForMigrations/ForMigrations.csproj", "src/WarehouseApplication/ForMigrations/"]
+COPY ["src/WarehouseApplication/Domain/Domain.csproj", "src/WarehouseApplication/Domain/"]
 RUN dotnet restore "MigrationApplay/MigrationApplay.csproj"
 COPY . .
 WORKDIR "/src/MigrationApplay"

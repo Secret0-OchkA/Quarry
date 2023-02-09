@@ -13,7 +13,7 @@ namespace ForMigrations
         public WarehouseDbContext CreateDbContext(string[] args)
         {
             DbContextOptionsBuilder<WarehouseDbContext> optBuilder = new DbContextOptionsBuilder<WarehouseDbContext>();
-            optBuilder.UseSqlServer(args.ElementAt(0));
+            optBuilder.UseSqlServer(args.FirstOrDefault() ?? "");
 
             return new WarehouseDbContext(optBuilder.Options);
         }

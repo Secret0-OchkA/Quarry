@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: src/WarehouseApplication/Api/Dockerfile
+    environment:
+      OWNER: "Secretochka"
 
   sql-server-db:
     container_name: sql-server-db
