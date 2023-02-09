@@ -13,7 +13,7 @@ namespace Infrastructura
     public interface IRepository<TEntity>
     {
         Task<TEntity> GetById(Guid Id);
-        Task<IEnumerable<TEntity>> GetAll();
+        Task<IEnumerable<TEntity>> GetAll(int page = 0,int pageSize = 10);
 
         Task<int> Cereate(TEntity entity);
 

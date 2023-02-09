@@ -11,6 +11,8 @@ namespace Api.Features.Queries
 {
     public class GetAllProductQuery : IRequest<IEnumerable<Product>>
     {
+        public int page { get; set; } = 0;
+        public int pageSize { get; set; } = 10;
 
         public class GetAllProductQuerryHandler : IRequestHandler<GetAllProductQuery, IEnumerable<Product>>
         {
@@ -23,7 +25,7 @@ namespace Api.Features.Queries
 
             public async Task<IEnumerable<Product>> Handle(GetAllProductQuery request, CancellationToken cancellationToken)
             {
-                return await productRepository.GetAll();
+                return await productRepository.GetAll(request.page,request.pageSize);
             }
         }
     }

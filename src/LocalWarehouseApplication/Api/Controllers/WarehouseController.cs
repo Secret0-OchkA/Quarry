@@ -41,11 +41,11 @@ public class WarehouseController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Product>>> GetAllProduct(CancellationToken token)
+    public async Task<ActionResult<IEnumerable<Product>>> GetAllProduct(CancellationToken token, [FromQuery] int page = 0, [FromQuery] int pageSize = 10)
     {
         try
         {
-            return Ok(await mediator.Send(new GetAllProductQuery(), token));
+            return Ok(await mediator.Send(new GetAllProductQuery() { page = page, pageSize = pageSize}, token));
         } catch (FluentValidation.ValidationException ex) { return BadRequest(ex.Message); }
     }
 
