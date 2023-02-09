@@ -1,9 +1,12 @@
 ﻿using Api.Features.Behaviour;
 using Api.Features.Commands;
+using App.Metrics;
+using App.Metrics.Extensions.Configuration;
 using Domain;
 using FluentValidation;
 using Infrastructura;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Services.Behaviour;
 using System.Data;
 using System.Data.Common;
@@ -24,12 +27,26 @@ namespace Api
 
             services.AddControllers();
 
+            services.AddMetrics(configuration);
+
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
 
             services.ConfigureMediatorR(configuration);
 
             return services;
+        }
+
+        public static void AddMetrics(this IServiceCollection services, IConfiguration configuration)
+        {
+            var metricBuilder = new MetricsBuilder()
+                .Configuration.ReadFrom(configuration)
+                .OutputMetrics.AsPrometheusPlainText();
+
+            services.AddMetrics(metricBuilder);
+            services.AddMetricsEndpoints(configuration);
+            services.AddMvcCore().AddMetricsCore();
+            services.AddMetricsTrackingMiddleware(configuration);
         }
 
         private static IServiceCollection ConfigureDbConnection(this IServiceCollection services, IConfiguration configuration)
