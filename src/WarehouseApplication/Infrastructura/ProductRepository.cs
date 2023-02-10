@@ -56,7 +56,7 @@ namespace Infrastructura
             return await dbConnection.QueryAsync<Product>($"SELECT * FROM [Products] ORDER BY id OFFSET {page * pageSize} ROWS FETCH NEXT {pageSize} ROWS ONLY;");
         }
 
-        public async Task<Product> GetById(Guid id)
+        public async Task<Product?> GetById(Guid id)
         {
             return await dbConnection.QueryFirstOrDefaultAsync<Product>($"SELECT * FROM [Products] WHERE [{nameof(Product.Id)}] = @{nameof(Product.Id)}",
                 new {id});

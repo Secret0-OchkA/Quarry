@@ -6,19 +6,19 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["src/WarehouseApplication/Api/Api.csproj", "src/WarehouseApplication/Api/"]
-COPY ["src/WarehouseApplication/Services/Services.csproj", "src/WarehouseApplication/Services/"]
-COPY ["src/WarehouseApplication/Domain/Domain.csproj", "src/WarehouseApplication/Domain/"]
-COPY ["src/WarehouseApplication/Infrastructura/Infrastructura.csproj", "src/WarehouseApplication/Infrastructura/"]
-RUN dotnet restore "src/WarehouseApplication/Api/Api.csproj"
+COPY ["src/WarehouseApplication/Api/Warehouse.Api.csproj", "src/WarehouseApplication/Api/"]
+COPY ["src/WarehouseApplication/Services/Warehouse.Services.csproj", "src/WarehouseApplication/Services/"]
+COPY ["src/WarehouseApplication/Domain/Warehouse.Domain.csproj", "src/WarehouseApplication/Domain/"]
+COPY ["src/WarehouseApplication/Infrastructura/Warehouse.Infrastructura.csproj", "src/WarehouseApplication/Infrastructura/"]
+RUN dotnet restore "src/WarehouseApplication/Api/Warehouse.Api.csproj"
 COPY . .
 WORKDIR "/src/src/WarehouseApplication/Api"
-RUN dotnet build "Api.csproj" -c Release -o /app/build
+RUN dotnet build "Warehouse.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Warehouse.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Api.dll"]
+ENTRYPOINT ["dotnet", "Warehouse.Api.dll"]

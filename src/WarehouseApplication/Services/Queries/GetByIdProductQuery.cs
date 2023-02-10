@@ -8,13 +8,13 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Api.Features.Queries
+namespace Services.Queries
 {
     public class GetByIdProductQuery : IRequest<Product>
     {
         public Guid Id { get; set; }
 
-        public class GetByIdProductQueryHandler : IRequestHandler<GetByIdProductQuery, Product>
+        public class GetByIdProductQueryHandler : IRequestHandler<GetByIdProductQuery, Product?>
         {
             private readonly IRepository<Product> productRepoisitory;
 
@@ -23,7 +23,7 @@ namespace Api.Features.Queries
                 this.productRepoisitory = productRepoisitory;
             }
 
-            public async Task<Product> Handle(GetByIdProductQuery request, CancellationToken cancellationToken)
+            public async Task<Product?> Handle(GetByIdProductQuery request, CancellationToken cancellationToken)
             {
                 return await productRepoisitory.GetById(request.Id);
             }

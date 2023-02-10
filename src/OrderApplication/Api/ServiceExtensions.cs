@@ -1,13 +1,12 @@
 ﻿
 using App.Metrics;
 using App.Metrics.Extensions.Configuration;
-using Domain;
 using FluentValidation;
 using Infrastructura;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Services.Behaviour;
-using Services.Commands;
 using Services.Queries;
 using System.Data;
 using System.Data.Common;
@@ -21,12 +20,10 @@ namespace Api
     {
         internal static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration)
         {
-
-            services.ConfigureDbConnection(configuration);
-
             services.AddControllers();
 
             services.AddMetrics(configuration);
+            services.AddEfCore(configuration);
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
@@ -41,29 +38,33 @@ namespace Api
             var metricBuilder = new MetricsBuilder()
                 .Configuration.ReadFrom(configuration)
                 .OutputMetrics.AsPrometheusPlainText();
-            
+
             services.AddMetrics(metricBuilder);
             services.AddMetricsEndpoints(configuration);
             services.AddMvcCore().AddMetricsCore();
             services.AddMetricsTrackingMiddleware(configuration);
         }
 
-        private static IServiceCollection ConfigureDbConnection(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection ConfigureMediatorR(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<IDbConnection>(new SqlConnection(configuration.GetConnectionString("MsSql")?? Environment.GetEnvironmentVariable("MsSql")));
-            services.AddTransient<IRepository<Product>, ProductRepository>();
+            services.AddValidatorsFromAssembly(typeof(GetByIdOrderQuery).Assembly);
+
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaiour<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
+
+            services.AddMediatR(typeof(GetByIdOrderQuery).Assembly, typeof(OrderAppDbContext).Assembly);
             return services;
         }
 
-        private static IServiceCollection ConfigureMediatorR(this IServiceCollection services, IConfiguration configuration)
+        public static void AddEfCore(this IServiceCollection services, IConfiguration config)
         {
-            services.AddValidatorsFromAssemblies(new List<Assembly>{ typeof(CreateProductCommand).Assembly, typeof(GetAllProductQuery).Assembly});
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaiour<,>));
-
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
-
-            services.AddMediatR(typeof(CreateProductCommand).Assembly,typeof(GetAllProductQuery).Assembly);
-            return services;
+            const int PoolSize = 3000;
+            services.AddDbContextPool<OrderAppDbContext>((dbContextConfig) =>
+            {
+                dbContextConfig
+                .UseSqlServer(config.GetConnectionString("MsSql"))
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            }, PoolSize);
         }
     }
 }

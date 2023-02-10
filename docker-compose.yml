@@ -1,13 +1,20 @@
 version: '3.4'
 
 services:
-  local-warhouse-api:
-    image: ${DOCKER_REGISTRY-}api
+  order.api:
+    image: ${DOCKER_REGISTRY-}orderapi
+    build:
+      context: .
+      dockerfile: src/OrderApplication/Api/Dockerfile
+
+  warehouse.api:
+    image: ${DOCKER_REGISTRY-}warehouseapi
     build:
       context: .
       dockerfile: src/WarehouseApplication/Api/Dockerfile
     environment:
       OWNER: "Secretochka"
+
 
   sql-server-db:
     container_name: sql-server-db
@@ -30,7 +37,3 @@ services:
       dockerfile: MigrationApplay/Dockerfile
     depends_on:
       - sql-server-db
-
-
-
-

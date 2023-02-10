@@ -1,5 +1,6 @@
 ﻿
 using ForMigrations;
+using Infrastructura;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -15,6 +16,10 @@ try
 
     using (WarehouseDbContext context = new WarehouseDbContextFactory()
         .CreateDbContext(new string[] { configuration.GetConnectionString("LocalWarehouseDbContext")! }))
+        await context.Database.MigrateAsync().ConfigureAwait(false);
+
+    using (OrderAppDbContext context = new OrderAppDbContextFactory()
+    .CreateDbContext(new string[] { configuration.GetConnectionString("LocalOrderDbCotenxt")! }))
         await context.Database.MigrateAsync().ConfigureAwait(false);
 
     Console.WriteLine("end migration");

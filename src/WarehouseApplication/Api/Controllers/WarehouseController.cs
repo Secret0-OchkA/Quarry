@@ -1,10 +1,11 @@
-﻿using Api.Features.Commands;
-using Api.Features.Queries;
+﻿
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Services.Commands;
+using Services.Queries;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Api.Controllers;

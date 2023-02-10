@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Api.Features.Queries
+namespace Services.Queries
 {
     public class GetAllProductQuery : IRequest<IEnumerable<Product>>
     {

@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Api.Features.Commands
+namespace Services.Commands
 {
     public class CreateProductCommand : IRequest<Product>
     {

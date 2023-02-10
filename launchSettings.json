@@ -4,9 +4,10 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "serviceActions": {
-        "local-warhouse-api": "StartDebugging",
         "migrationapplay": "StartWithoutDebugging",
-        "sql-server-db": "StartWithoutDebugging"
+        "order.api": "StartDebugging",
+        "sql-server-db": "StartWithoutDebugging",
+        "warehouse.api": "StartWithoutDebugging"
       }
     }
   }
