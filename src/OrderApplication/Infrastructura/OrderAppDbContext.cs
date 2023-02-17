@@ -28,7 +28,7 @@ namespace Infrastructura
             base.OnModelCreating(modelBuilder);
         }
 
-        public async Task<int> SaveChanges()
+        public override async Task<int> SaveChanges()
             => await base.SaveChangesAsync();
     }
 }
