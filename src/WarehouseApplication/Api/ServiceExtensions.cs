@@ -3,9 +3,10 @@ using App.Metrics;
 using App.Metrics.Extensions.Configuration;
 using Domain;
 using FluentValidation;
-using Infrastructura;
+using infrastructura;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Services.Behaviour;
 using Services.Commands;
 using Services.Queries;
@@ -25,6 +26,8 @@ namespace Api
             services.ConfigureDbConnection(configuration);
 
             services.AddControllers();
+
+            services.AddEfCore(configuration);
 
             services.AddMetrics(configuration);
 
@@ -51,7 +54,6 @@ namespace Api
         private static IServiceCollection ConfigureDbConnection(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<IDbConnection>(new SqlConnection(configuration.GetConnectionString("MsSql")?? Environment.GetEnvironmentVariable("MsSql")));
-            services.AddTransient<IRepository<Product>, ProductRepository>();
             return services;
         }
 
@@ -64,6 +66,17 @@ namespace Api
 
             services.AddMediatR(typeof(CreateProductCommand).Assembly,typeof(GetAllProductQuery).Assembly);
             return services;
+        }
+
+        public static void AddEfCore(this IServiceCollection services, IConfiguration config)
+        {
+            const int PoolSize = 3000;
+            services.AddDbContextPool<WarehouseDbContext>((dbContextConfig) =>
+            {
+                dbContextConfig
+                .UseSqlServer(config.GetConnectionString("MsSql"))
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            }, PoolSize);
         }
     }
 }

@@ -20,11 +20,11 @@ namespace Domain
             this.Unit = Unit;
         }
         public Guid Id { get; protected set; }
-        public string Name { get; protected set; } = string.Empty;
-        public string Description { get; protected set; } = string.Empty;
-        public decimal Cost { get; protected set; }
-        public double Count { get; protected set; }
-        public string Unit { get; protected set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public decimal Cost { get; set; }
+        public double Count { get;set; }
+        public string Unit { get; set; } = string.Empty;
         public string Owner { get; protected set; } = Environment.GetEnvironmentVariable("OWNER") ?? string.Empty;
     }
 }

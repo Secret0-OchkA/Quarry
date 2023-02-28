@@ -1,4 +1,5 @@
 using Api;
+using Order.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+InitializeDatabaseClass.InitializeDatabase(app);
 app.UseAuthorization();
 
 app.MapControllers();

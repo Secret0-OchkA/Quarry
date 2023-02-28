@@ -1,6 +1,6 @@
 ﻿using Domain;
 using FluentValidation;
-using Infrastructura;
+using infrastructura;
 using MediatR;
 using System;
 using System.Buffers;
@@ -21,11 +21,11 @@ namespace Services.Commands
 
         public class AddProductCommandHandler : IRequestHandler<CreateProductCommand, Product>
         {
-            private readonly IRepository<Product> productRepository;
+            private readonly WarehouseDbContext context;
 
-            public AddProductCommandHandler(IRepository<Product> productRepository)
+            public AddProductCommandHandler(WarehouseDbContext context)
             {
-                this.productRepository = productRepository;
+                this.context = context;
             }
 
             public async Task<Product> Handle(CreateProductCommand request, CancellationToken cancellationToken)
@@ -38,7 +38,8 @@ namespace Services.Commands
                     Unit: request.Unit
                 );
 
-                await productRepository.Cereate(product);
+                context.Add(product);
+                await context.SaveChangesAsync(cancellationToken);
 
                 return product;
             }

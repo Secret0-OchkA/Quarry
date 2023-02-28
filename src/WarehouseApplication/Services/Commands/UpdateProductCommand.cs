@@ -1,17 +1,20 @@
 ﻿using Domain;
 using FluentValidation;
-using Infrastructura;
+using infrastructura;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Services.Commands
 {
-    public class UpdateProductCommand : IRequest<Product>
+    public class UpdateProductCommand : IRequest<Product?>
     {
+        [JsonIgnore]
         public Guid Id { get; set; } = Guid.Empty;
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -19,28 +22,32 @@ namespace Services.Commands
         public float Count { get; set; }
         public string Unit { get; set; } = string.Empty;
 
-        public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, Product>
+        public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, Product?>
         {
-            private readonly IRepository<Product> productRepository;
+            private readonly WarehouseDbContext context;
 
-            public UpdateProductCommandHandler(IRepository<Product> productRepository)
+            public UpdateProductCommandHandler(WarehouseDbContext context)
             {
-                this.productRepository = productRepository;
+                this.context = context;
             }
 
-            public async Task<Product> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
+            public async Task<Product?> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
             {
-                Product updateProduct = new Product(
-                    Name: request.Name,
-                    Description: request.Description,
-                    Cost: request.Cost,
-                    Count: request.Count,
-                    Unit: request.Unit
-                );
+                Product? product = await context.Products
+                    .AsTracking()
+                    .SingleOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
 
-                await productRepository.Update(request.Id, updateProduct);
+                if (product == null) return null;
 
-                return updateProduct;
+                product.Description = request.Description;
+                product.Cost = request.Cost;
+                product.Count = request.Count;
+                product.Unit = request.Unit;
+                product.Name = request.Name;
+
+                context.Update(product);
+                await context.SaveChangesAsync(cancellationToken);
+                return product;
             }
         }
 

@@ -1,13 +1,7 @@
 version: '3.4'
 
 services:
-  order.api:
-    image: ${DOCKER_REGISTRY-}orderapi
-    build:
-      context: .
-      dockerfile: src/OrderApplication/Api/Dockerfile
-
-  warehouse.api:
+  warehouse-api:
     image: ${DOCKER_REGISTRY-}warehouseapi
     build:
       context: .
@@ -28,12 +22,3 @@ services:
       - ./sqlserv/data:/var/opt/mssql/data
       - ./sqlserv/log:/var/opt/mssql/log
       - ./sqlserv/secrets:/var/opt/mssql/secrets
-
-
-  migrationapplay:
-    image: ${DOCKER_REGISTRY-}migrationapplay
-    build:
-      context: .
-      dockerfile: MigrationApplay/Dockerfile
-    depends_on:
-      - sql-server-db

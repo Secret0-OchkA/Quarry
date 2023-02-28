@@ -62,10 +62,9 @@ public class WarehouseController : ControllerBase
     [HttpPut("{Id}")]
     public async Task<ActionResult<int>> UpdateProduct(Guid Id, [FromBody] UpdateProductCommand command)
     {
-        if (Id != command.Id) return BadRequest("not equal id in route and command");
-
         try
         {
+            command.Id = Id;
             return Ok(await mediator.Send(command));
         } catch (FluentValidation.ValidationException ex) { return BadRequest(ex.Message); }
     }

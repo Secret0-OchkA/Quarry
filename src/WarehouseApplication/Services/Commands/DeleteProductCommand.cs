@@ -1,7 +1,8 @@
 ﻿using Domain;
 using FluentValidation;
-using Infrastructura;
+using infrastructura;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,16 +17,22 @@ namespace Services.Commands
 
         public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, int>
         {
-            private readonly IRepository<Product> productRepository;
+            private readonly WarehouseDbContext context;
 
-            public DeleteProductCommandHandler(IRepository<Product> productRepository)
+            public DeleteProductCommandHandler(WarehouseDbContext context)
             {
-                this.productRepository = productRepository;
+                this.context = context;
             }
 
             public async Task<int> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
             {
-                return await productRepository.Delete(request.id);
+                Product? product = await context.Products
+                    .SingleOrDefaultAsync(p => p.Id == request.id,cancellationToken);
+
+                if (product == null) return 0;
+
+                context.Remove(product);
+                return await context.SaveChangesAsync(cancellationToken);
             }
         }
 

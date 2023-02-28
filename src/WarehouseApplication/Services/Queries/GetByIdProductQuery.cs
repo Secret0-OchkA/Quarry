@@ -1,6 +1,7 @@
 ﻿using Domain;
-using Infrastructura;
+using infrastructura;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,16 +17,16 @@ namespace Services.Queries
 
         public class GetByIdProductQueryHandler : IRequestHandler<GetByIdProductQuery, Product?>
         {
-            private readonly IRepository<Product> productRepoisitory;
+            private readonly WarehouseDbContext context;
 
-            public GetByIdProductQueryHandler(IRepository<Product> productRepoisitory)
+            public GetByIdProductQueryHandler(WarehouseDbContext context)
             {
-                this.productRepoisitory = productRepoisitory;
+                this.context = context;
             }
 
             public async Task<Product?> Handle(GetByIdProductQuery request, CancellationToken cancellationToken)
             {
-                return await productRepoisitory.GetById(request.Id);
+                return await context.Products.SingleOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
             }
         }
     }

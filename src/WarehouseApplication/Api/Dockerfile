@@ -5,10 +5,11 @@ WORKDIR /app
 EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /src
+WORKDIR /Src
 COPY ["src/WarehouseApplication/Api/Warehouse.Api.csproj", "src/WarehouseApplication/Api/"]
-COPY ["src/WarehouseApplication/Services/Warehouse.Services.csproj", "src/WarehouseApplication/Services/"]
+COPY ["src/WarehouseApplication/ForMigrations/Warehouse.ForMigrations.csproj", "src/WarehouseApplication/ForMigrations/"]
 COPY ["src/WarehouseApplication/Domain/Warehouse.Domain.csproj", "src/WarehouseApplication/Domain/"]
+COPY ["src/WarehouseApplication/Services/Warehouse.Services.csproj", "src/WarehouseApplication/Services/"]
 COPY ["src/WarehouseApplication/Infrastructura/Warehouse.Infrastructura.csproj", "src/WarehouseApplication/Infrastructura/"]
 RUN dotnet restore "src/WarehouseApplication/Api/Warehouse.Api.csproj"
 COPY . .

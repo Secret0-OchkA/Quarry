@@ -1,5 +1,5 @@
 ﻿using Domain;
-using Infrastructura;
+using infrastructura;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -16,16 +16,16 @@ namespace Services.Queries
 
         public class GetAllProductQuerryHandler : IRequestHandler<GetAllProductQuery, IEnumerable<Product>>
         {
-            private readonly IRepository<Product> productRepository;
+            private readonly WarehouseDbContext context;
 
-            public GetAllProductQuerryHandler(IRepository<Product> productRepository)
+            public GetAllProductQuerryHandler(WarehouseDbContext context)
             {
-                this.productRepository = productRepository;
+                this.context = context;
             }
 
             public async Task<IEnumerable<Product>> Handle(GetAllProductQuery request, CancellationToken cancellationToken)
             {
-                return await productRepository.GetAll(request.page,request.pageSize);
+                return context.Products.Skip(request.page * request.pageSize).Take(request.pageSize);
             }
         }
     }

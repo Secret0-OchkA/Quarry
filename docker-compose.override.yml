@@ -1,14 +1,7 @@
 version: '3.4'
 
 services:
-  order.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "48900:80"
-      - "48901:443"
-
-  warehouse.api:
+  warehouse-api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
