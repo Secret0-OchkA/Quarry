@@ -15,12 +15,12 @@ namespace Warehouse.Services.Behaviour
         where TRequest : IRequest<TResponse>
     {
         private readonly ILogger<IdempotencyBehaviour<TRequest, TResponse>> logger;
-        private readonly IdempotencyKeyProvider keyProvider;
+        private readonly IIdempotencyKeyProvider keyProvider;
         private readonly IEventManager eventManager;
 
         public IdempotencyBehaviour(
-            ILogger<IdempotencyBehaviour<TRequest,TResponse>> logger,
-            IdempotencyKeyProvider keyProvider,
+            ILogger<IdempotencyBehaviour<TRequest, TResponse>> logger,
+            IIdempotencyKeyProvider keyProvider,
             IEventManager eventRecordManager)
         {
             this.logger = logger;
@@ -34,9 +34,12 @@ namespace Warehouse.Services.Behaviour
                 return await next();
 
             if(!Guid.TryParse(await keyProvider.Get(),out Guid idempotencyKey))
-                return await next();
+            {
+                logger.LogInformation("{Property}, : complite {@Value}", command.GetType().Name, command);
+                throw new FluentValidation.ValidationException("command should have Idempotency-Key header");
+            }
 
-            var eventRecord = await eventManager.Get(idempotencyKey);
+            var eventRecord = await eventManager.Get(idempotencyKey, command.GetType().Name);
             if (eventRecord != null)
             {
                 logger.LogInformation("{Property}, : complite {@Value}", command.GetType().Name, command);

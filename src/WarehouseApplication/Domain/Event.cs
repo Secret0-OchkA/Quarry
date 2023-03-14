@@ -11,11 +11,11 @@ namespace Warehouse.Domain
 {
     public sealed class Event
     {
-        Event() { }
         public Event(Guid id, string eventType, object data)
         {
             Id = id;
             this.EventType = eventType;
+            Data = data;
         }
 
         public Guid Id { get; private set; }

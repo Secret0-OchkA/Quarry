@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Warehouse.Services.Behaviour;
 using Warehouse.Services.Commands;
+using Warehouse.Services.Idempotency;
 using Warehouse.Services.Queries;
 
 namespace Api
@@ -59,11 +60,14 @@ namespace Api
 
         private static IServiceCollection ConfigureMediatorR(this IServiceCollection services)
         {
+            services.AddTransient<IIdempotencyKeyProvider, HttpContextIdempotencyKeyProvider>();
+            services.AddTransient<IEventManager,EventManager>();
+            services.AddHttpContextAccessor();
 
             services.AddValidatorsFromAssemblies(new List<Assembly>{ typeof(CreateProductCommand).Assembly, typeof(GetAllProductQuery).Assembly});
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaiour<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(IdempotencyBehaviour<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaiour<,>));
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(IdempotencyBehaviour<,>));
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
 
             services.AddMediatR(typeof(CreateProductCommand).Assembly,typeof(GetAllProductQuery).Assembly);
             return services;

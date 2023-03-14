@@ -12,7 +12,7 @@ namespace Warehouse.Services.Idempotency
 {
     public interface IEventManager
     {
-        Task<Event?> Get(Guid eventId);
+        Task<Event?> Get(Guid id, string type);
         Task Save(Guid eventId, string eventName, object data);
     }
 
@@ -25,8 +25,8 @@ namespace Warehouse.Services.Idempotency
             this.context = context;
         }
 
-        public async Task<Event?> Get(Guid eventId)
-            => await context.events.SingleOrDefaultAsync(e => e.Id == eventId);
+        public async Task<Event?> Get(Guid id, string type)
+            => await context.events.SingleOrDefaultAsync(e => e.Id == id && e.EventType.Equals(type));
 
         public async Task Save(Guid eventId, string eventName, object data)
         {

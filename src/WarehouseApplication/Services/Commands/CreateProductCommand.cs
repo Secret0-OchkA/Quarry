@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Warehouse.Services.Commands
 {
-    public class CreateProductCommand : ICommand<Unit>
+    public class CreateProductCommand : ICommand<Product?>
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -19,7 +19,7 @@ namespace Warehouse.Services.Commands
         public float Count { get; set; }
         public string Unit { get; set; } = string.Empty;
 
-        public class AddProductCommandHandler : IRequestHandler<CreateProductCommand>
+        public class AddProductCommandHandler : IRequestHandler<CreateProductCommand, Product?>
         {
             private readonly WarehouseDbContext context;
 
@@ -28,7 +28,7 @@ namespace Warehouse.Services.Commands
                 this.context = context;
             }
 
-            public async Task<Unit> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+            public async Task<Product?> Handle(CreateProductCommand request, CancellationToken cancellationToken)
             {
                 Product product = new(
                     Name: request.Name,
@@ -41,7 +41,7 @@ namespace Warehouse.Services.Commands
                 context.Add(product);
                 await context.SaveChangesAsync(cancellationToken);
 
-                return MediatR.Unit.Value;
+                return product;
             }
         }
 

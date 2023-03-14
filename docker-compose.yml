@@ -22,3 +22,22 @@ services:
       - ./sqlserv/data:/var/opt/mssql/data
       - ./sqlserv/log:/var/opt/mssql/log
       - ./sqlserv/secrets:/var/opt/mssql/secrets
+
+
+  rabbitmq:
+    restart: always
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - myname
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq/mnesia
+
+
+
+volumes:
+  rabbitmq:
+    driver: local

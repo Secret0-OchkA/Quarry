@@ -26,11 +26,11 @@ namespace Domain
         public string Name { get; set; } = string.Empty;
 
         public string? Description { get; set; }
-        [Required, Range(0,double.MaxValue)]
+        [Required]
         public decimal Cost { get; set; }
         [Required]
         public double Count { get; set; }
-        [Required, MaxLength(20)]
+        [Required]
         public string Unit { get; set; } = string.Empty;
 
         public string? Scope { get; private set; } = Environment.GetEnvironmentVariable("SCOPE");

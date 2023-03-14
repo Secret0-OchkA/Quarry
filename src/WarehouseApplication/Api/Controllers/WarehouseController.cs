@@ -37,8 +37,7 @@ public class WarehouseController : ControllerBase
     {
         try
         {
-            int count = await mediator.Send(new DeleteProductCommand() { Id = Id }, token);
-            return Ok(count);
+            return Ok(await mediator.Send(new DeleteProductCommand() { Id = Id }, token));
         } catch (FluentValidation.ValidationException ex) { return BadRequest(ex.Message); }
     }
 
@@ -61,7 +60,7 @@ public class WarehouseController : ControllerBase
     }
 
     [HttpPut("{Id}")]
-    public async Task<ActionResult<int>> UpdateProduct(Guid Id, [FromBody] UpdateProductCommand command)
+    public async Task<ActionResult<int>> UpdateProduct(Guid Id, [FromBody] UpdateProductInfoCommand command)
     {
         try
         {
@@ -71,10 +70,33 @@ public class WarehouseController : ControllerBase
     }
 
 
+
+
+    /// <summary>
+    /// в склад
+    /// </summary>
+    /// <param name="Id"></param>
+    /// <param name="delta"></param>
+    /// <returns></returns>
     [HttpPost("{id}/[action]")]
     public async Task<ActionResult<Product>> Import(Guid Id, double delta)
     {
-        var command = new UpdateProductCountCommand() { ProductId = Id, Delta = delta };
+        var command = new ImportProductCommand() { ProductId = Id, Delta = delta };
+
+        await mediator.Send(command);
+
+        return Ok();
+    }
+    /// <summary>
+    /// из склада
+    /// </summary>
+    /// <param name="Id"></param>
+    /// <param name="delta"></param>
+    /// <returns></returns>
+    [HttpPost("{id}/[action]")]
+    public async Task<ActionResult<Product>> Export(Guid Id, double delta)
+    {
+        var command = new ExportProductCommand() { ProductId = Id, Delta = delta };
 
         await mediator.Send(command);
 

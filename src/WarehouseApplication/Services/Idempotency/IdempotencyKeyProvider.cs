@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Warehouse.Services.Idempotency
 {
-    public interface IdempotencyKeyProvider
+    public interface IIdempotencyKeyProvider
     {
         Task<string?> Get();
     }
 
-    public class HttpContextIdempotencyKeyProvider : IdempotencyKeyProvider
+    public class HttpContextIdempotencyKeyProvider : IIdempotencyKeyProvider
     {
         private readonly IHttpContextAccessor contextAccessor;
 

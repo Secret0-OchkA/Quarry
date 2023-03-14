@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Warehouse.Services.Commands
 {
-    public class UpdateProductCommand : ICommand<Product?>
+    public class UpdateProductInfoCommand : ICommand<Product?>
     {
         [JsonIgnore]
         public Guid Id { get; set; } = Guid.Empty;
@@ -21,7 +21,7 @@ namespace Warehouse.Services.Commands
         public decimal Cost { get; set; }
         public string Unit { get; set; } = string.Empty;
 
-        public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, Product?>
+        public class UpdateProductCommandHandler : IRequestHandler<UpdateProductInfoCommand, Product?>
         {
             private readonly WarehouseDbContext context;
 
@@ -30,7 +30,7 @@ namespace Warehouse.Services.Commands
                 this.context = context;
             }
 
-            public async Task<Product?> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
+            public async Task<Product?> Handle(UpdateProductInfoCommand request, CancellationToken cancellationToken)
             {
                 Product? product = await context.Products
                     .AsTracking()
@@ -50,7 +50,7 @@ namespace Warehouse.Services.Commands
             }
         }
 
-        public class UpdateProductCommandValidator : AbstractValidator<UpdateProductCommand>
+        public class UpdateProductCommandValidator : AbstractValidator<UpdateProductInfoCommand>
         {
             public UpdateProductCommandValidator()
             {

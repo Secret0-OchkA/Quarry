@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Warehouse.Services.Commands
 {
-    public interface ICommand<out TResult> : IRequest<TResult>
+    public interface ICommand<out Response> : IRequest<Response>
     {
     }
 }

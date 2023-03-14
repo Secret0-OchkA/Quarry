@@ -7,10 +7,8 @@ namespace Order.Api
     {
         public static void InitializeDatabase(this IApplicationBuilder app)
         {
-            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-            {
-                serviceScope.ServiceProvider.GetRequiredService<WarehouseDbContext>().Database.Migrate();
-            }
+            using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>()?.CreateScope() ?? throw new NullReferenceException();
+            serviceScope.ServiceProvider.GetRequiredService<WarehouseDbContext>().Database.Migrate();
         }
     }
 }
