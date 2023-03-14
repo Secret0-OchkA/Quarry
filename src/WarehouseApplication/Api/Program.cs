@@ -1,4 +1,5 @@
 using Api;
+using Microsoft.Extensions.DependencyInjection;
 using Order.Api;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,9 @@ Microsoft.Extensions.Configuration.IConfiguration configuration = new Configurat
 
 builder.Services.ConfigureServices(configuration);
 
+
 var app = builder.Build();
+app.InitializeDatabase();
 
 app.UseMetricsEndpoint();
 app.UseMetricsRequestTrackingMiddleware();
@@ -22,7 +25,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-InitializeDatabaseClass.InitializeDatabase(app);
 app.UseAuthorization();
 
 app.MapControllers();

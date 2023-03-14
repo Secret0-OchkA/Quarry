@@ -9,13 +9,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.Commands
+namespace Warehouse.Services.Commands
 {
-    public class DeleteProductCommand : IRequest<int>
+    public class DeleteProductCommand : ICommand<int>
     {
-        public Guid id { get; set; }
+        public Guid Id { get; set; }
 
-        public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, int>
+        public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand,int>
         {
             private readonly WarehouseDbContext context;
 
@@ -27,11 +27,12 @@ namespace Services.Commands
             public async Task<int> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
             {
                 Product? product = await context.Products
-                    .SingleOrDefaultAsync(p => p.Id == request.id,cancellationToken);
+                    .SingleOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
 
                 if (product == null) return 0;
 
                 context.Remove(product);
+
                 return await context.SaveChangesAsync(cancellationToken);
             }
         }

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain
 {
-    public class Product : IEntity
+    public sealed class Product
     {
         protected Product() { }
         public Product(
@@ -19,12 +20,19 @@ namespace Domain
             this.Count = Count;
             this.Unit = Unit;
         }
-        public Guid Id { get; protected set; }
+
+        public Guid Id { get; private set; }
+        [Required, MaxLength(256)]
         public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
+
+        public string? Description { get; set; }
+        [Required, Range(0,double.MaxValue)]
         public decimal Cost { get; set; }
-        public double Count { get;set; }
+        [Required]
+        public double Count { get; set; }
+        [Required, MaxLength(20)]
         public string Unit { get; set; } = string.Empty;
-        public string Owner { get; protected set; } = Environment.GetEnvironmentVariable("OWNER") ?? string.Empty;
+
+        public string? Scope { get; private set; } = Environment.GetEnvironmentVariable("SCOPE");
     }
 }

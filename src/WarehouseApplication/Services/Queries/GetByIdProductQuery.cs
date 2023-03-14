@@ -9,9 +9,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.Queries
+namespace Warehouse.Services.Queries
 {
-    public class GetByIdProductQuery : IRequest<Product>
+    public class GetByIdProductQuery : IQuery<Product>
     {
         public Guid Id { get; set; }
 

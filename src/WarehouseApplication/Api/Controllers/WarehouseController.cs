@@ -4,9 +4,10 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Services.Commands;
-using Services.Queries;
+
 using System.Security.Cryptography.X509Certificates;
+using Warehouse.Services.Commands;
+using Warehouse.Services.Queries;
 
 namespace Api.Controllers;
 
@@ -26,8 +27,8 @@ public class WarehouseController : ControllerBase
     {
         try
         {
-            Product entity = await mediator.Send(command, token);
-            return CreatedAtAction(nameof(CreateProduct), new { id = entity.Id }, entity);
+            await mediator.Send(command, token);
+            return Ok();
         } catch (FluentValidation.ValidationException ex) { return BadRequest(ex.Message); }
     }
 
@@ -36,7 +37,7 @@ public class WarehouseController : ControllerBase
     {
         try
         {
-            int count = await mediator.Send(new DeleteProductCommand() { id = Id }, token);
+            int count = await mediator.Send(new DeleteProductCommand() { Id = Id }, token);
             return Ok(count);
         } catch (FluentValidation.ValidationException ex) { return BadRequest(ex.Message); }
     }
@@ -46,7 +47,7 @@ public class WarehouseController : ControllerBase
     {
         try
         {
-            return Ok(await mediator.Send(new GetAllProductQuery() { page = page, pageSize = pageSize}, token));
+            return Ok(await mediator.Send(new GetAllProductQuery() { Page = page, PageSize = pageSize}, token));
         } catch (FluentValidation.ValidationException ex) { return BadRequest(ex.Message); }
     }
 
@@ -67,5 +68,16 @@ public class WarehouseController : ControllerBase
             command.Id = Id;
             return Ok(await mediator.Send(command));
         } catch (FluentValidation.ValidationException ex) { return BadRequest(ex.Message); }
+    }
+
+
+    [HttpPost("{id}/[action]")]
+    public async Task<ActionResult<Product>> Import(Guid Id, double delta)
+    {
+        var command = new UpdateProductCountCommand() { ProductId = Id, Delta = delta };
+
+        await mediator.Send(command);
+
+        return Ok();
     }
 }

@@ -7,12 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.Queries
+namespace Warehouse.Services.Queries
 {
-    public class GetAllProductQuery : IRequest<IEnumerable<Product>>
+    public class GetAllProductQuery : IQuery<IEnumerable<Product>>
     {
-        public int page { get; set; } = 0;
-        public int pageSize { get; set; } = 10;
+        public int Page { get; set; } = 0;
+        public int PageSize { get; set; } = 10;
 
         public class GetAllProductQuerryHandler : IRequestHandler<GetAllProductQuery, IEnumerable<Product>>
         {
@@ -25,7 +25,7 @@ namespace Services.Queries
 
             public async Task<IEnumerable<Product>> Handle(GetAllProductQuery request, CancellationToken cancellationToken)
             {
-                return context.Products.Skip(request.page * request.pageSize).Take(request.pageSize);
+                return context.Products.Skip(request.Page * request.PageSize).Take(request.PageSize);
             }
         }
     }

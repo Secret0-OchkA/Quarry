@@ -9,9 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.Commands
+namespace Warehouse.Services.Commands
 {
-    public class CreateProductCommand : IRequest<Product>
+    public class CreateProductCommand : ICommand<Unit>
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -19,7 +19,7 @@ namespace Services.Commands
         public float Count { get; set; }
         public string Unit { get; set; } = string.Empty;
 
-        public class AddProductCommandHandler : IRequestHandler<CreateProductCommand, Product>
+        public class AddProductCommandHandler : IRequestHandler<CreateProductCommand>
         {
             private readonly WarehouseDbContext context;
 
@@ -28,9 +28,9 @@ namespace Services.Commands
                 this.context = context;
             }
 
-            public async Task<Product> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(CreateProductCommand request, CancellationToken cancellationToken)
             {
-                Product product = new Product(
+                Product product = new(
                     Name: request.Name,
                     Description: request.Description,
                     Cost: request.Cost,
@@ -41,7 +41,7 @@ namespace Services.Commands
                 context.Add(product);
                 await context.SaveChangesAsync(cancellationToken);
 
-                return product;
+                return MediatR.Unit.Value;
             }
         }
 

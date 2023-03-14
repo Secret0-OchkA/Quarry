@@ -7,14 +7,14 @@ using infrastructura;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Services.Behaviour;
-using Services.Commands;
-using Services.Queries;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Warehouse.Services.Behaviour;
+using Warehouse.Services.Commands;
+using Warehouse.Services.Queries;
 
 namespace Api
 {
@@ -34,7 +34,7 @@ namespace Api
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
 
-            services.ConfigureMediatorR(configuration);
+            services.ConfigureMediatorR();
 
             return services;
         }
@@ -57,11 +57,12 @@ namespace Api
             return services;
         }
 
-        private static IServiceCollection ConfigureMediatorR(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection ConfigureMediatorR(this IServiceCollection services)
         {
+
             services.AddValidatorsFromAssemblies(new List<Assembly>{ typeof(CreateProductCommand).Assembly, typeof(GetAllProductQuery).Assembly});
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaiour<,>));
-
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(IdempotencyBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
 
             services.AddMediatR(typeof(CreateProductCommand).Assembly,typeof(GetAllProductQuery).Assembly);

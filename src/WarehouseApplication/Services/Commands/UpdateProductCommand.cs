@@ -10,16 +10,15 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Services.Commands
+namespace Warehouse.Services.Commands
 {
-    public class UpdateProductCommand : IRequest<Product?>
+    public class UpdateProductCommand : ICommand<Product?>
     {
         [JsonIgnore]
         public Guid Id { get; set; } = Guid.Empty;
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public decimal Cost { get; set; }
-        public float Count { get; set; }
         public string Unit { get; set; } = string.Empty;
 
         public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, Product?>
@@ -41,12 +40,12 @@ namespace Services.Commands
 
                 product.Description = request.Description;
                 product.Cost = request.Cost;
-                product.Count = request.Count;
                 product.Unit = request.Unit;
                 product.Name = request.Name;
 
                 context.Update(product);
                 await context.SaveChangesAsync(cancellationToken);
+
                 return product;
             }
         }
@@ -58,7 +57,6 @@ namespace Services.Commands
                 RuleFor(p => p.Name).NotEmpty().WithMessage("Empty name");
                 RuleFor(p => p.Unit).NotEmpty().WithMessage("empty unit");
                 RuleFor(p => p.Cost).GreaterThan(0).WithMessage("cost less 0");
-                RuleFor(p => p.Count).GreaterThan(-1).WithMessage("count less 0");
             }
         }
     }
