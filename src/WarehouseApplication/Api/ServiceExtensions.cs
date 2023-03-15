@@ -7,15 +7,18 @@ using infrastructura;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RabbitMQ.Client;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.ServiceModel.Channels;
 using Warehouse.Services.Behaviour;
 using Warehouse.Services.Commands;
 using Warehouse.Services.Idempotency;
 using Warehouse.Services.Queries;
+using Warehouse.Services.RabbitMq;
 
 namespace Api
 {
@@ -36,6 +39,8 @@ namespace Api
             services.AddSwaggerGen();
 
             services.ConfigureMediatorR();
+
+            services.ConfigureRabbit(configuration);
 
             return services;
         }
@@ -79,9 +84,35 @@ namespace Api
             services.AddDbContextPool<WarehouseDbContext>((dbContextConfig) =>
             {
                 dbContextConfig
-                .UseSqlServer(config.GetConnectionString("MsSql"))
+                .UseSqlServer(Environment.GetEnvironmentVariable("CONNECTION_STRING"))//config.GetConnectionString("MsSql")
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             }, PoolSize);
+        }
+
+
+        public static void ConfigureRabbit(this IServiceCollection services, IConfiguration config)
+        {
+            services.AddSingleton<IConnectionFactory>(provider => new ConnectionFactory { HostName = "rabbitmq"});
+            services.AddScoped(provider => provider.GetRequiredService<IConnectionFactory>().CreateConnection());
+            services.AddScoped(provider => provider.GetRequiredService<IConnection>().CreateModel());
+            services.AddScoped(provider => provider.GetRequiredService<IModel>().QueueDeclare(
+                queue: "MyQueue",
+                durable: false,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null));
+
+            //!!!!------TEMP SOLVE------!!!!
+            string role = Environment.GetEnvironmentVariable("MESSAGE_ROLE");
+            switch (role)
+            {
+                case "producer":
+                    services.AddScoped<IRabbitMQProducer, RabbitMQProducer>();
+                    break;
+                case "consumer":
+                    services.AddHostedService<RabbitMqConsumer>();
+                    break;
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ namespace Warehouse.Services.Commands
         public decimal Cost { get; set; }
         public float Count { get; set; }
         public string Unit { get; set; } = string.Empty;
+        public string? Scope { get; set; } = Environment.GetEnvironmentVariable("SCOPE");
 
         public class AddProductCommandHandler : IRequestHandler<CreateProductCommand, Product?>
         {
@@ -35,7 +36,8 @@ namespace Warehouse.Services.Commands
                     Description: request.Description,
                     Cost: request.Cost,
                     Count: request.Count,
-                    Unit: request.Unit
+                    Unit: request.Unit,
+                    Scope: request.Scope
                 );
 
                 context.Add(product);

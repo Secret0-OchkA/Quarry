@@ -30,7 +30,8 @@ namespace infrastructura
                 .HasKey(e => new { e.Id, e.EventType });
             modelBuilder.Entity<Event>()
                 .Property(e => e.Data).HasJsonConversion();
-                
+            modelBuilder.Entity<Event>()
+                .Property(e => e.Metadata).HasJsonConversion();
 
             base.OnModelCreating(modelBuilder);
         }

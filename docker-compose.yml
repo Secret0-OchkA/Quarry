@@ -1,14 +1,28 @@
 version: '3.4'
 
 services:
-  warehouse-api:
+  warehouse-api-producer:
     image: ${DOCKER_REGISTRY-}warehouseapi
+    container_name: warehouse-api-producer
     build:
       context: .
       dockerfile: src/WarehouseApplication/Api/Dockerfile
     environment:
       OWNER: "Secretochka"
+      MESSAGE_ROLE: "producer"
+      CONNECTION_STRING: Server=sql-server-db,1433;Database=localWarehousedbProducer;User Id=sa;Password=Secretochka2442;Encrypt=false;TrustServerCertificate=true
 
+
+  warehouse-api-consumer:
+    image: ${DOCKER_REGISTRY-}warehouseapi
+    container_name: warehouse-api-consumer
+    build:
+      context: .
+      dockerfile: src/WarehouseApplication/Api/Dockerfile
+    environment:
+      OWNER: "Secretochka"
+      MESSAGE_ROLE: "consumer"
+      CONNECTION_STRING: Server=sql-server-db,1433;Database=localWarehousedbConsumer;User Id=sa;Password=Secretochka2442;Encrypt=false;TrustServerCertificate=true
 
   sql-server-db:
     container_name: sql-server-db
@@ -31,8 +45,6 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
-    networks:
-      - myname
     volumes:
       - rabbitmq:/var/lib/rabbitmq/mnesia
 

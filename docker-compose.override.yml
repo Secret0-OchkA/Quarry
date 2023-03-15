@@ -1,10 +1,16 @@
 version: '3.4'
 
 services:
-  warehouse-api:
+  warehouse-api-producer:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "48902:80"
       - "48903:443"
 
+  warehouse-api-consumer:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "48904:80"
+      - "48905:443"

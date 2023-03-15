@@ -12,13 +12,15 @@ namespace Domain
         protected Product() { }
         public Product(
             string Name, string Description, decimal Cost,
-            double Count, string Unit) {
+            double Count, string Unit, string? Scope = null)
+        {
             this.Id = Guid.NewGuid();
             this.Name = Name;
             this.Description = Description;
             this.Cost = Cost;
             this.Count = Count;
             this.Unit = Unit;
+            this.Scope = Scope ?? Environment.GetEnvironmentVariable("SCOPE");
         }
 
         public Guid Id { get; private set; }
@@ -33,6 +35,6 @@ namespace Domain
         [Required]
         public string Unit { get; set; } = string.Empty;
 
-        public string? Scope { get; private set; } = Environment.GetEnvironmentVariable("SCOPE");
+        public string? Scope { get; private set; }
     }
 }
