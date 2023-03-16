@@ -1,16 +1,6 @@
 version: '3.4'
 
 services:
-  warehouse-api-producer:
-    image: ${DOCKER_REGISTRY-}warehouseapi
-    container_name: warehouse-api-producer
-    build:
-      context: .
-      dockerfile: src/WarehouseApplication/Api/Dockerfile
-    environment:
-      OWNER: "Secretochka"
-      CONNECTION_STRING: Server=sql-server-db,1433;Database=localWarehousedbProducer;User Id=sa;Password=Secretochka2442;Encrypt=false;TrustServerCertificate=true
-
 
   warehouse-api-consumer:
     image: ${DOCKER_REGISTRY-}warehouseapi
@@ -20,6 +10,18 @@ services:
       dockerfile: src/WarehouseApplication/Api/Dockerfile
     environment:
       CONNECTION_STRING: Server=sql-server-db,1433;Database=localWarehousedbConsumer;User Id=sa;Password=Secretochka2442;Encrypt=false;TrustServerCertificate=true
+
+
+
+  warehouse-api-producer:
+    image: ${DOCKER_REGISTRY-}warehouseapi
+    container_name: warehouse-api-producer
+    build:
+      context: .
+      dockerfile: src/WarehouseApplication/Api/Dockerfile
+    environment:
+      OWNER: "Secretochka"
+      CONNECTION_STRING: Server=sql-server-db,1433;Database=localWarehousedbProducer;User Id=sa;Password=Secretochka2442;Encrypt=false;TrustServerCertificate=true
 
   sql-server-db:
     container_name: sql-server-db

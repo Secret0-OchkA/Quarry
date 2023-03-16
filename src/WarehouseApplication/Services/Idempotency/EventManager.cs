@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Warehouse.Domain;
 using Warehouse.Services.Commands;
+using Warehouse.Services.RabbitMq;
 
 namespace Warehouse.Services.Idempotency
 {
@@ -20,10 +21,12 @@ namespace Warehouse.Services.Idempotency
     public class EventManager : IEventManager
     {
         private readonly WarehouseDbContext context;
+        private readonly IRabbitMQProducer producer;
 
-        public EventManager(WarehouseDbContext context)
+        public EventManager(WarehouseDbContext context, IRabbitMQProducer producer)
         {
             this.context = context;
+            this.producer = producer;
         }
 
         public async Task<Event?> Get(Guid id, string type)
@@ -35,6 +38,8 @@ namespace Warehouse.Services.Idempotency
 
             await context.AddAsync(newEvent);
             await context.SaveChangesAsync();
+
+            producer.SendMessage(newEvent);
         }
     }
 }

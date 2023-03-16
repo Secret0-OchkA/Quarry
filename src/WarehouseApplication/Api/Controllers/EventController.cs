@@ -30,8 +30,10 @@ namespace Warehouse.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> ExecuteEvent(Event eventObj)
+        public async Task<ActionResult> ExecuteEvent([FromBody]Event eventObj)
         {
+            logger.LogInformation("Get event: {object}", JsonConvert.SerializeObject(eventObj));
+
             this.Request.Headers.Add("Idempotence-key", eventObj.Id.ToString());
 
             Type? eventType = Type.GetType($"Warehouse.Services.Commands.{eventObj.EventType}, {Assembly.GetAssembly(typeof(CreateProductCommand)).GetName()}");

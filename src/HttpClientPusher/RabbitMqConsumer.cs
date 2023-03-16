@@ -45,15 +45,16 @@ namespace Warehouse.Services.RabbitMq
                 logger.LogInformation($"get msg: {content}");
 
                 StringContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = null;
+                HttpResponseMessage response;
                 try
                 {
                     response = await httpClient.PostAsync("http://warehouse-api-consumer/api/event", httpContent);
-                }catch(Exception ex) { }
-
-                if (response != null) 
-                if (response.StatusCode != System.Net.HttpStatusCode.OK)
-                    throw new BadHttpRequestException(response.ToString());
+                    logger.LogInformation(await response.Content.ReadAsStringAsync());
+                }
+                catch(Exception ex) 
+                {
+                    logger.LogError(ex.Message);
+                }
 
                 channel.BasicAck(ea.DeliveryTag, false);
             };

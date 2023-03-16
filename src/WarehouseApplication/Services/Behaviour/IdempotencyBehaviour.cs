@@ -48,7 +48,7 @@ namespace Warehouse.Services.Behaviour
             }
             
 
-            await eventManager.Save(idempotencyKey,command.GetType().Name,new JObject(command), new JObject());
+            await eventManager.Save(idempotencyKey,command.GetType().Name,JObject.FromObject(command), new JObject());
             return await next();
         }
     }

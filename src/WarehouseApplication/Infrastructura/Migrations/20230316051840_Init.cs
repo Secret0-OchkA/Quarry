@@ -18,7 +18,10 @@ namespace Warehouse.Infrastructura.Migrations
                     DateCreate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EventType = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Data = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Version = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Data = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Metadata = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -34,7 +37,7 @@ namespace Warehouse.Infrastructura.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Cost = table.Column<decimal>(type: "money", nullable: false),
                     Count = table.Column<double>(type: "float", nullable: false),
-                    Unit = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Scope = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>

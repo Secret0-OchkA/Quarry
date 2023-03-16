@@ -30,7 +30,7 @@ namespace Api
 
             services.ConfigureDbConnection(configuration);
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
 
             services.AddEfCore(configuration);
 

@@ -12,8 +12,8 @@ using infrastructura;
 namespace Warehouse.Infrastructura.Migrations
 {
     [DbContext(typeof(WarehouseDbContext))]
-    [Migration("20230314121145_AddVersion")]
-    partial class AddVersion
+    [Migration("20230316051840_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
