@@ -7,6 +7,7 @@ using infrastructura;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
 using System.Data;
 using System.Data.Common;
@@ -36,7 +37,25 @@ namespace Api
             services.AddMetrics(configuration);
 
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "warehouse api",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "telegram",
+                        Url = new Uri("https://t.me/bingolz")
+                    },
+                });
+
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            });
+
+            services.AddRouting(options => options.LowercaseUrls = true);
+            services.AddCors();
 
             services.ConfigureMediatorR();
 
@@ -102,17 +121,7 @@ namespace Api
                 autoDelete: false,
                 arguments: null));
 
-            //!!!!------TEMP SOLVE------!!!!
-            string role = Environment.GetEnvironmentVariable("MESSAGE_ROLE");
-            switch (role)
-            {
-                case "producer":
-                    services.AddScoped<IRabbitMQProducer, RabbitMQProducer>();
-                    break;
-                case "consumer":
-                    services.AddHostedService<RabbitMqConsumer>();
-                    break;
-            }
+            services.AddScoped<IRabbitMQProducer, RabbitMQProducer>();
         }
     }
 }

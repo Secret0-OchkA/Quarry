@@ -9,7 +9,6 @@ services:
       dockerfile: src/WarehouseApplication/Api/Dockerfile
     environment:
       OWNER: "Secretochka"
-      MESSAGE_ROLE: "producer"
       CONNECTION_STRING: Server=sql-server-db,1433;Database=localWarehousedbProducer;User Id=sa;Password=Secretochka2442;Encrypt=false;TrustServerCertificate=true
 
 
@@ -20,8 +19,6 @@ services:
       context: .
       dockerfile: src/WarehouseApplication/Api/Dockerfile
     environment:
-      OWNER: "Secretochka"
-      MESSAGE_ROLE: "consumer"
       CONNECTION_STRING: Server=sql-server-db,1433;Database=localWarehousedbConsumer;User Id=sa;Password=Secretochka2442;Encrypt=false;TrustServerCertificate=true
 
   sql-server-db:
@@ -49,6 +46,15 @@ services:
       - rabbitmq:/var/lib/rabbitmq/mnesia
 
 
+
+  httpclientpusher:
+    image: ${DOCKER_REGISTRY-}httpclientpusher
+    build:
+      context: .
+      dockerfile: src/HttpClientPusher/Dockerfile
+    depends_on:
+    - rabbitmq
+    - warehouse-api-consumer
 
 volumes:
   rabbitmq:

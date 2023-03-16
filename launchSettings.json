@@ -4,10 +4,22 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "serviceActions": {
-        "migrationapplay": "StartWithoutDebugging",
-        "order.api": "StartDebugging",
+        "warehouse-api-producer": "StartDebugging",
+        "warehouse-api-consumer": "StartDebugging",
         "sql-server-db": "StartWithoutDebugging",
-        "warehouse.api": "StartWithoutDebugging"
+        "rabbitmq": "StartWithoutDebugging",
+        "httpclientpusher": "StartDebugging"
+      }
+    },
+    "masterOnly": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "httpclientpusher": "DoNotStart",
+        "rabbitmq": "DoNotStart",
+        "sql-server-db": "StartWithoutDebugging",
+        "warehouse-api-consumer": "StartDebugging",
+        "warehouse-api-producer": "DoNotStart"
       }
     }
   }

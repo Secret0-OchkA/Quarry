@@ -15,6 +15,8 @@ builder.Services.ConfigureServices(configuration);
 var app = builder.Build();
 app.InitializeDatabase();
 
+app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+
 app.UseMetricsEndpoint();
 app.UseMetricsRequestTrackingMiddleware();
 app.UseMetricsAllEndpoints();

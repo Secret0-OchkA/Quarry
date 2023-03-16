@@ -14,3 +14,10 @@ services:
     ports:
       - "48904:80"
       - "48905:443"
+
+  httpclientpusher:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+

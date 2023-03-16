@@ -1,6 +1,7 @@
 ﻿using infrastructura;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,9 +46,9 @@ namespace Warehouse.Services.Behaviour
                 logger.LogInformation("{Property}, : complite {@Value}", command.GetType().Name, command);
                 throw new FluentValidation.ValidationException("command complite");
             }
+            
 
-
-            await eventManager.Save(idempotencyKey,command.GetType().Name,command);
+            await eventManager.Save(idempotencyKey,command.GetType().Name,new JObject(command), new JObject());
             return await next();
         }
     }

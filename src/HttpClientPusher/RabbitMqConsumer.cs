@@ -20,13 +20,13 @@ namespace Warehouse.Services.RabbitMq
     {
         private readonly IConnectionFactory factory;
         private readonly ILogger<RabbitMqConsumer> logger;
-        private readonly IMediator mediator;
+        private readonly HttpClient httpClient;
 
-        public RabbitMqConsumer(IConnectionFactory factory, ILogger<RabbitMqConsumer> logger, IMediator mediator)
+        public RabbitMqConsumer(IConnectionFactory factory, ILogger<RabbitMqConsumer> logger, IHttpClientFactory httpClientFactory)
         {
             this.factory = factory;
             this.logger = logger;
-            this.mediator = mediator;
+            httpClient = httpClientFactory.CreateClient("fortTestClient");
         }
 
         protected override Task ExecuteAsync(CancellationToken cancellationToken)
@@ -37,18 +37,23 @@ namespace Warehouse.Services.RabbitMq
             cancellationToken.ThrowIfCancellationRequested();
             channel.QueueDeclare(queue: "MyQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-            EventingBasicConsumer consumer = new EventingBasicConsumer(channel);
+            EventingBasicConsumer consumer = new(channel);
             consumer.Received += async (ch, ea) =>
             {
                 var content = Encoding.UTF8.GetString(ea.Body.ToArray());
 
                 logger.LogInformation($"get msg: {content}");
 
-                var eventOjb = JsonConvert.DeserializeObject<Event>(content);
-                Type eventType = Type.GetType("Warehouse.Services.Commands." + eventOjb.EventType);
-                var command = JsonConvert.DeserializeObject(eventOjb.Data, eventType);
+                StringContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = null;
+                try
+                {
+                    response = await httpClient.PostAsync("http://warehouse-api-consumer/api/event", httpContent);
+                }catch(Exception ex) { }
 
-                await mediator.Send(command);
+                if (response != null) 
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                    throw new BadHttpRequestException(response.ToString());
 
                 channel.BasicAck(ea.DeliveryTag, false);
             };
