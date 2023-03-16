@@ -34,7 +34,7 @@ namespace Warehouse.Api.Controllers
         {
             logger.LogInformation("Get event: {object}", JsonConvert.SerializeObject(eventObj));
 
-            this.Request.Headers.Add("Idempotence-key", eventObj.Id.ToString());
+            this.Request.Headers.Add("Idempotency-Key", eventObj.Id.ToString());
 
             Type? eventType = Type.GetType($"Warehouse.Services.Commands.{eventObj.EventType}, {Assembly.GetAssembly(typeof(CreateProductCommand)).GetName()}");
             if (eventType == null)

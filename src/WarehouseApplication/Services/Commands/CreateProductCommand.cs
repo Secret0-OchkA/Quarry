@@ -13,6 +13,7 @@ namespace Warehouse.Services.Commands
 {
     public class CreateProductCommand : ICommand<Product?>
     {
+        public Guid Id = Guid.NewGuid();
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public decimal Cost { get; set; }
@@ -32,6 +33,7 @@ namespace Warehouse.Services.Commands
             public async Task<Product?> Handle(CreateProductCommand request, CancellationToken cancellationToken)
             {
                 Product product = new(
+                    id: request.Id,
                     Name: request.Name,
                     Description: request.Description,
                     Cost: request.Cost,

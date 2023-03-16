@@ -47,7 +47,6 @@ namespace Warehouse.Services.Behaviour
                 throw new FluentValidation.ValidationException("command complite");
             }
             
-
             await eventManager.Save(idempotencyKey,command.GetType().Name,JObject.FromObject(command), new JObject());
             return await next();
         }

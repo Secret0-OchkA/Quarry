@@ -1,4 +1,5 @@
-﻿using infrastructura;
+﻿using Domain;
+using infrastructura;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System;
