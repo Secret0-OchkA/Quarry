@@ -30,13 +30,17 @@ namespace Warehouse.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> ExecuteEvent(Event Event)
+        public async Task<ActionResult> ExecuteEvent(Event eventObj)
         {
-            this.Request.Headers.Add("Idempotence-key", Event.Id.ToString());
+            this.Request.Headers.Add("Idempotence-key", eventObj.Id.ToString());
 
-            Type eventType = Type.GetType($"Warehouse.Services.Commands.{Event.EventType}, {Assembly.GetAssembly(typeof(CreateProductCommand)).GetName()}");
-            
-            var command = Activator.CreateInstance(eventType);
+            Type? eventType = Type.GetType($"Warehouse.Services.Commands.{eventObj.EventType}, {Assembly.GetAssembly(typeof(CreateProductCommand)).GetName()}");
+            if (eventType == null)
+                throw new ArgumentException("invalid event type");
+
+            var command = eventObj.Data.ToObject(eventType);
+            if (command == null)
+                throw new ArgumentNullException("null data for event type");
 
             await mediator.Send(command);
             return Ok();
