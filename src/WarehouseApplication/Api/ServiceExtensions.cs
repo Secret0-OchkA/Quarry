@@ -27,9 +27,6 @@ namespace Api
     {
         internal static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration)
         {
-
-            services.ConfigureDbConnection(configuration);
-
             services.AddControllers().AddNewtonsoftJson();
 
             services.AddEfCore(configuration);
@@ -76,12 +73,6 @@ namespace Api
             services.AddMetricsTrackingMiddleware(configuration);
         }
 
-        private static IServiceCollection ConfigureDbConnection(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddSingleton<IDbConnection>(new SqlConnection(configuration.GetConnectionString("MsSql")?? Environment.GetEnvironmentVariable("MsSql")));
-            return services;
-        }
-
         private static IServiceCollection ConfigureMediatorR(this IServiceCollection services)
         {
             services.AddTransient<IIdempotencyKeyProvider, HttpContextIdempotencyKeyProvider>();
@@ -103,11 +94,10 @@ namespace Api
             services.AddDbContextPool<WarehouseDbContext>((dbContextConfig) =>
             {
                 dbContextConfig
-                .UseSqlServer(Environment.GetEnvironmentVariable("CONNECTION_STRING"))//config.GetConnectionString("MsSql")
+                .UseNpgsql(Environment.GetEnvironmentVariable("CONNECTION_STRING"))//config.GetConnectionString("MsSql")
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             }, PoolSize);
         }
-
 
         public static void ConfigureRabbit(this IServiceCollection services, IConfiguration config)
         {

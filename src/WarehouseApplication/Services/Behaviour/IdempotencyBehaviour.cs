@@ -37,7 +37,7 @@ namespace Warehouse.Services.Behaviour
             if(!Guid.TryParse(await keyProvider.Get(),out Guid idempotencyKey))
             {
                 logger.LogInformation("{Property}, : complite {@Value}", command.GetType().Name, command);
-                throw new FluentValidation.ValidationException("command should have Idempotency-Key header");
+                throw new FluentValidation.ValidationException("command should have Idempotency-Key header with guid");
             }
 
             var eventRecord = await eventManager.Get(idempotencyKey, command.GetType().Name);

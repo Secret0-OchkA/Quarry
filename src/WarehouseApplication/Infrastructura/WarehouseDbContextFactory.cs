@@ -13,7 +13,7 @@ namespace infrastructura
         public WarehouseDbContext CreateDbContext(string[] args)
         {
             DbContextOptionsBuilder<WarehouseDbContext> optBuilder = new DbContextOptionsBuilder<WarehouseDbContext>();
-            optBuilder.UseSqlServer(args.FirstOrDefault() ?? "");
+            optBuilder.UseNpgsql(args.FirstOrDefault() ?? "");
 
             return new WarehouseDbContext(optBuilder.Options);
         }

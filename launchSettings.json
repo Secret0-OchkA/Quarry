@@ -6,7 +6,6 @@
       "serviceActions": {
         "warehouse-api-producer": "StartDebugging",
         "warehouse-api-consumer": "StartDebugging",
-        "sql-server-db": "StartWithoutDebugging",
         "rabbitmq": "StartWithoutDebugging",
         "httpclientpusher": "StartDebugging"
       }
@@ -17,7 +16,6 @@
       "serviceActions": {
         "httpclientpusher": "DoNotStart",
         "rabbitmq": "DoNotStart",
-        "sql-server-db": "StartWithoutDebugging",
         "warehouse-api-consumer": "StartDebugging",
         "warehouse-api-producer": "DoNotStart"
       }
