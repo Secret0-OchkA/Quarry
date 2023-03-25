@@ -9,6 +9,7 @@ namespace Domain
 {
     public sealed class Product
     {
+        protected Product() { }    
         public Product(Guid id,
             string Name, string Description, decimal Cost,
             double Count, string Unit, string? Scope = null)

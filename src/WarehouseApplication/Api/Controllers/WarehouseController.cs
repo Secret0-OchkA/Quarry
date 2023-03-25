@@ -41,24 +41,6 @@ public class WarehouseController : ControllerBase
         } catch (FluentValidation.ValidationException ex) { return BadRequest(ex.Message); }
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Product>>> GetAllProduct(CancellationToken token, [FromQuery] int page = 0, [FromQuery] int pageSize = 10)
-    {
-        try
-        {
-            return Ok(await mediator.Send(new GetAllProductQuery() { Page = page, PageSize = pageSize}, token));
-        } catch (FluentValidation.ValidationException ex) { return BadRequest(ex.Message); }
-    }
-
-    [HttpGet("{Id}")]
-    public async Task<ActionResult<Product>> GetByIdProduct(Guid Id, CancellationToken token)
-    {
-        try
-        {
-            return Ok(await mediator.Send(new GetByIdProductQuery() { Id = Id }, token));
-        } catch (FluentValidation.ValidationException ex) { return BadRequest(ex.Message); }
-    }
-
     [HttpPut("{Id}")]
     public async Task<ActionResult<int>> UpdateProduct(Guid Id, [FromBody] UpdateProductInfoCommand command)
     {

@@ -18,17 +18,22 @@ namespace Warehouse.Api.Controllers
     [ApiController]
     public class EventController : ControllerBase
     {
-        private readonly IRabbitMQProducer rabbitMqService;
         private readonly ILogger<EventController> logger;
         private readonly IMediator mediator;
 
-        public EventController(IRabbitMQProducer rabbitMqService, ILogger<EventController> logger, IMediator mediator)
+        public EventController(ILogger<EventController> logger, IMediator mediator)
         {
-            this.rabbitMqService = rabbitMqService;
             this.logger = logger;
             this.mediator = mediator;
         }
 
+        /// <summary>
+        /// push events here
+        /// </summary>
+        /// <param name="eventObj"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         [HttpPost]
         public async Task<ActionResult> ExecuteEvent([FromBody]Event eventObj)
         {
@@ -45,21 +50,6 @@ namespace Warehouse.Api.Controllers
                 throw new ArgumentNullException("null data for event type");
 
             await mediator.Send(command);
-            return Ok();
-        }
-
-        [HttpPost("message")]
-        public ActionResult Message(string command)
-        {
-            rabbitMqService.SendMessage(command);
-            return Ok();
-        }
-
-
-        [HttpPost("createTestEvent")]
-        public ActionResult CreateTestEvent(Event command)
-        {
-            rabbitMqService.SendMessage(command);
             return Ok();
         }
     }

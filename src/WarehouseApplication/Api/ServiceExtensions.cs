@@ -48,7 +48,7 @@ namespace Api
                 });
 
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+                options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
 
             services.AddRouting(options => options.LowercaseUrls = true);
@@ -57,6 +57,9 @@ namespace Api
             services.ConfigureMediatorR();
 
             services.ConfigureRabbit(configuration);
+
+            services.AddGraphQLServer()
+                .AddQueryType<Query>();
 
             return services;
         }
@@ -76,15 +79,20 @@ namespace Api
         private static IServiceCollection ConfigureMediatorR(this IServiceCollection services)
         {
             services.AddTransient<IIdempotencyKeyProvider, HttpContextIdempotencyKeyProvider>();
-            services.AddTransient<IEventManager,EventManager>();
+            services.AddTransient<IEventManager, EventManager>();
             services.AddHttpContextAccessor();
 
-            services.AddValidatorsFromAssemblies(new List<Assembly>{ typeof(CreateProductCommand).Assembly, typeof(GetAllProductQuery).Assembly});
-            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaiour<,>));
-            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(IdempotencyBehaviour<,>));
-            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
+            services.AddValidatorsFromAssemblies(new List<Assembly> { typeof(CreateProductCommand).Assembly });
 
-            services.AddMediatR(typeof(CreateProductCommand).Assembly,typeof(GetAllProductQuery).Assembly);
+            services.AddMediatR(config =>
+            {
+                config.RegisterServicesFromAssembly(typeof(CreateProductCommand).Assembly);
+                config.AddOpenBehavior(typeof(ValidationBehaiour<,>));
+                config.AddOpenBehavior(typeof(IdempotencyBehaviour<,>));
+                config.AddOpenBehavior(typeof(LoggingBehaviour<,>));
+            });
+
+                
             return services;
         }
 
