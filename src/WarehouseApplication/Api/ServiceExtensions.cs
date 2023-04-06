@@ -23,7 +23,7 @@ using Warehouse.Services.RabbitMq;
 
 namespace Api
 {
-    public static class ServiceExtensions
+    public static partial class ServiceExtensions
     {
         internal static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration)
         {
@@ -33,9 +33,12 @@ namespace Api
 
             services.AddMetrics(configuration);
 
+            services.SetupHealthCheack();
+
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options =>
             {
+                options.OperationFilter<IdempotencyKeyHeaderSwaggerAttribute>();
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
@@ -105,6 +108,12 @@ namespace Api
                 .UseNpgsql(Environment.GetEnvironmentVariable("CONNECTION_STRING"))//config.GetConnectionString("MsSql")
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             }, PoolSize);
+        }
+
+        public static void SetupHealthCheack(this IServiceCollection services)
+        {
+            services.AddHealthChecks()
+                .AddNpgSql(Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? throw new NullReferenceException("not define connection string for Postgres"));
         }
 
         public static void ConfigureRabbit(this IServiceCollection services, IConfiguration config)

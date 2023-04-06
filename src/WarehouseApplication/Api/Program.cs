@@ -1,4 +1,6 @@
 using Api;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
 using Order.Api;
 
@@ -20,7 +22,13 @@ app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(
 app.UseMetricsEndpoint();
 app.UseMetricsRequestTrackingMiddleware();
 app.UseMetricsAllEndpoints();
-// Configure the HTTP request pipeline. 1237699
+
+app.MapHealthChecks("/health", new HealthCheckOptions()
+{
+    Predicate = _ => true,
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

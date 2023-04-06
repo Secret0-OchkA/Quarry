@@ -31,7 +31,6 @@ namespace Warehouse.Services.Behaviour
                 if (propValue == null) break;
 
                 _logger.LogInformation("{Property} : {@Value}", prop.Name, propValue);
-                // Do something with propValue
             }
 
             var response = await next();

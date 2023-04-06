@@ -25,6 +25,8 @@
     <PackageReference Include="App.Metrics.AspNetCore.Mvc.Core" Version="4.3.0" />
     <PackageReference Include="App.Metrics.Core" Version="4.3.0" />
     <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="4.3.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="6.0.2" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.5" />
     <PackageReference Include="FluentValidation" Version="11.5.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.1" />
     <PackageReference Include="HotChocolate.AspNetCore" Version="13.0.5" />
